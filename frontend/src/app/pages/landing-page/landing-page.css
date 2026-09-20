@@ -92,3 +92,64 @@ h1 {
     padding: 2rem;
   }
 }
+
+.how {
+  margin: 3rem 0 0;
+}
+
+.section h2 {
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  line-height: 1.1;
+  margin: 0 0 2rem;
+}
+
+.steps {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.step {
+  background: rgba(10, 19, 34, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  padding: 1.5rem;
+}
+
+.step .num {
+  align-items: center;
+  background: linear-gradient(135deg, #5ce8ae 0%, #4a9eff 100%);
+  border-radius: 999px;
+  color: #04101f;
+  display: flex;
+  font-weight: 800;
+  height: 2.25rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+  width: 2.25rem;
+}
+
+.step h3 {
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem;
+}
+
+.step p {
+  color: #cad8eb;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.step a {
+  color: #74e5b6;
+  text-decoration: none;
+}
+
+.step a:hover {
+  text-decoration: underline;
+}
