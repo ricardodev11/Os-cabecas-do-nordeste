@@ -23,4 +23,5 @@ export interface AgentProfile {
   template_id?: string | null;
   visibility?: string;
   version?: number;
+  executor?: string | null;
 }

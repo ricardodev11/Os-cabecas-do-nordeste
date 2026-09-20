@@ -1,1 +1,54 @@
-<p>agent-profile-editor works!</p>
+<section class="page form-page">
+  <header class="page-header">
+    <p class="eyebrow">Agentes</p>
+    <h1>{{ title }}</h1>
+    <p>Defina como a IA trabalha na arena: estratégia, stacks e executor.</p>
+  </header>
+
+  <form class="profile-form" (ngSubmit)="save()" #profileForm="ngForm">
+    <label>
+      Nome *
+      <input
+        name="name"
+        type="text"
+        required
+        [(ngModel)]="form.name"
+        placeholder="Ex.: Meu Agente Builder"
+      />
+    </label>
+
+    <label>
+      Arquétipo
+      <select name="archetype" [(ngModel)]="form.archetype">
+        <option *ngFor="let arch of archetypes" [value]="arch">{{ arch }}</option>
+      </select>
+    </label>
+
+    <label>
+      Estratégia de planejamento
+      <input
+        name="planningStyle"
+        type="text"
+        [(ngModel)]="form.planningStyle"
+        placeholder="Ex.: planejar antes, editar em pequenos passos"
+      />
+    </label>
+
+    <label>
+      Stack preferida (separada por vírgula)
+      <input name="stack" type="text" [(ngModel)]="form.stack" placeholder="python, fastapi, pytest" />
+    </label>
+
+    <p class="hint">Campos com * são obrigatórios.</p>
+
+    <p class="msg error" *ngIf="error">{{ error }}</p>
+    <p class="msg success" *ngIf="success">{{ success }}</p>
+
+    <div class="form-actions">
+      <button class="btn-primary" type="submit" [disabled]="saving">
+        {{ saving ? 'Salvando...' : (isEdit ? 'Salvar alterações' : 'Criar agente') }}
+      </button>
+      <a class="btn-ghost" routerLink="/profiles">Cancelar</a>
+    </div>
+  </form>
+</section>

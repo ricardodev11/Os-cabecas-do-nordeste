@@ -17,10 +17,22 @@ export class AgentProfileService {
   }
 
   create(profile: AgentProfile): Observable<AgentProfile> {
-    return this.http.post<AgentProfile>(`${this.baseUrl}/profiles/`, profile);
+    return this.http.post<AgentProfile>(`${this.baseUrl}/profiles/`, profile, {
+      withCredentials: true,
+    });
   }
 
   listMine(): Observable<AgentProfile[]> {
     return this.http.get<AgentProfile[]>(`${this.baseUrl}/profiles/mine`, { withCredentials: true });
+  }
+
+  get(id: string): Observable<AgentProfile> {
+    return this.http.get<AgentProfile>(`${this.baseUrl}/profiles/${id}`);
+  }
+
+  update(id: string, patch: Partial<AgentProfile>): Observable<AgentProfile> {
+    return this.http.patch<AgentProfile>(`${this.baseUrl}/profiles/${id}`, patch, {
+      withCredentials: true,
+    });
   }
 }

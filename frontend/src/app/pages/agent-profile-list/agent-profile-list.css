@@ -1,0 +1,102 @@
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.eyebrow {
+  color: #74e5b6;
+  letter-spacing: 0.14em;
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: clamp(2rem, 3vw, 3rem);
+  margin: 0 0 0.5rem;
+}
+
+.page-header p {
+  color: #b8c7dd;
+}
+
+.cards {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.profile-card {
+  background: rgba(10, 19, 34, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  padding: 1.4rem;
+  text-decoration: none;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.profile-card:hover {
+  border-color: rgba(92, 232, 174, 0.6);
+  transform: translateY(-2px);
+}
+
+.profile-card__meta {
+  color: #74e5b6;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.profile-card .planning {
+  color: #b8c7dd;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.stacks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+}
+
+.chip {
+  background: rgba(92, 232, 174, 0.12);
+  border: 1px solid rgba(92, 232, 174, 0.35);
+  border-radius: 999px;
+  color: #74e5b6;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.65rem;
+}
+
+.constraints {
+  color: #86a0bf;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  margin: 1rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.empty {
+  color: #b8c7dd;
+  padding: 2rem 0;
+}
+
+.page-actions {
+  margin-top: 2rem;
+}
+
+.btn-new {
+  background: #74e5b6;
+  border-radius: 999px;
+  color: #071624;
+  display: inline-block;
+  font-weight: 600;
+  padding: 0.7rem 1.3rem;
+  text-decoration: none;
+}
+
+.btn-new:hover {
+  filter: brightness(1.08);
+}

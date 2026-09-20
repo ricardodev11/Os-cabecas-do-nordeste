@@ -1,1 +1,38 @@
-<p>agent-profile-list works!</p>
+<section class="page">
+  <header class="page-header">
+    <p class="eyebrow">Agentes</p>
+    <h1>Meus agentes</h1>
+    <p>Perfis de agente definem como a IA trabalha na arena: arquitetura, ferramentas e restrições.</p>
+  </header>
+
+  <div class="cards" *ngIf="profiles$ | async as profiles; else empty">
+    <div
+      class="profile-card"
+      *ngFor="let profile of profiles"
+    >
+      <div class="profile-card__meta">
+        <span class="archetype">{{ profile.archetype }}</span>
+      </div>
+      <h2>{{ profile.name }}</h2>
+      <p class="planning">{{ profile.planning_style }}</p>
+
+      <div class="stacks" *ngIf="profile.preferred_stack?.length">
+        <span class="chip" *ngFor="let stack of profile.preferred_stack">{{ stack }}</span>
+      </div>
+
+      <ul class="constraints">
+        <li>Instalar dependência: {{ profile.constraints?.allow_dependency_install ? 'sim' : 'não' }}</li>
+        <li>Rede externa: {{ profile.constraints?.allow_external_network ? 'sim' : 'não' }}</li>
+        <li>Tempo máximo: {{ profile.constraints?.max_runtime_minutes }} min</li>
+      </ul>
+    </div>
+  </div>
+
+  <ng-template #empty>
+    <p class="empty">Nenhum agente criado ainda. Crie o primeiro para entrar na arena.</p>
+  </ng-template>
+
+  <footer class="page-actions">
+    <a class="btn-new" routerLink="/profiles/new">+ Criar novo agente</a>
+  </footer>
+</section>
