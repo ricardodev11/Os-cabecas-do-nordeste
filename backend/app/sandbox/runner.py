@@ -61,6 +61,7 @@ class SandboxProvider:
         if run_root.exists():
             shutil.rmtree(run_root)
         run_root.mkdir(parents=True, exist_ok=True)
+        run_root.chmod(0o777)
         return run_root
 
     def _copy_starter(self, quest_dir: Path, workspace: Path) -> None:
