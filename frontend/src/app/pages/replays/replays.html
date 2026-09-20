@@ -1,1 +1,93 @@
-<p>replays works!</p>
+<section class="page">
+  <ng-container *ngIf="detailView$ | async as view; else listSection">
+    <ng-container *ngIf="view.battle && view.replay; else detailMissing">
+      <header class="page-header">
+        <p class="eyebrow">Replay</p>
+        <h1>{{ view.battle.battle.quest_id }}</h1>
+        <a class="back-link" routerLink="/replays">Voltar para replays</a>
+      </header>
+
+      <div class="battle-banner">
+        <span class="badge" [class]="'status-' + view.battle.battle.status">
+          {{ statusLabel(view.battle.battle.status) }}
+        </span>
+        <span class="meta">
+          {{ view.battle.battle.battle_type }} · criada {{ view.battle.battle.created_at | date:'dd/MM/yyyy HH:mm' }}
+        </span>
+      </div>
+
+      <div class="result-card" *ngIf="view.battle.result as result">
+        <div class="result-grid">
+          <div class="seat">
+            <small>Esquerda</small>
+            <strong>{{ result.score_left }}</strong>
+          </div>
+          <div class="versus">vs</div>
+          <div class="seat">
+            <small>Direita</small>
+            <strong>{{ result.score_right }}</strong>
+          </div>
+        </div>
+        <p class="summary">{{ result.summary }}</p>
+      </div>
+
+      <div class="run-grid">
+        <article class="run-card" *ngFor="let bundle of view.replay.runs">
+          <header>
+            <h2>Perfil {{ bundle.run.agent_profile_id }}</h2>
+            <span class="seat-tag">{{ seatLabel(view.battle, bundle.participant_id) }}</span>
+          </header>
+
+          <div class="run-score" *ngIf="bundle.run.summary">
+            <strong>{{ bundle.run.summary.technical_score }}</strong>
+            <span>score técnico</span>
+          </div>
+
+          <h3>Timeline de eventos</h3>
+          <ul class="timeline">
+            <li *ngFor="let event of bundle.replay">
+              <time>{{ event.timestamp | date:'HH:mm:ss' }}</time>
+              <span>{{ event.message }}</span>
+            </li>
+          </ul>
+
+          <a class="back-link" [routerLink]="['/runs', bundle.run.id, 'post-mortem']">
+            Ver post-mortem
+          </a>
+        </article>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #listSection>
+    <header class="page-header">
+      <p class="eyebrow">Histórico</p>
+      <h1>Replays de batalhas</h1>
+      <p>Partidas do alpha com timeline de eventos, placar e avaliação de cada lado.</p>
+    </header>
+
+    <ng-container *ngIf="battles$ | async as battles">
+      <div class="battle-list" *ngIf="battles.length; else listEmpty">
+        <a class="battle-card" *ngFor="let battle of battles" [routerLink]="['/replays', battle.battle.id]">
+          <span class="badge" [class]="'status-' + battle.battle.status">
+            {{ statusLabel(battle.battle.status) }}
+          </span>
+          <h2>{{ battle.battle.quest_id }}</h2>
+          <p class="meta">{{ battle.battle.battle_type }} · criada {{ battle.battle.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
+          <div class="score-row" *ngIf="battle.result">
+            <span>{{ battle.result.score_left }}</span>
+            <small>vs</small>
+            <span>{{ battle.result.score_right }}</span>
+          </div>
+        </a>
+      </div>
+      <ng-template #listEmpty>
+        <p class="empty">Nenhuma batalha registrada ainda.</p>
+      </ng-template>
+    </ng-container>
+  </ng-template>
+
+  <ng-template #detailMissing>
+    <p class="empty">Replay indisponível para esta batalha.</p>
+  </ng-template>
+</section>
