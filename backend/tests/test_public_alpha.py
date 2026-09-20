@@ -2,6 +2,7 @@
 import sqlite3
 import time
 import unittest
+from contextlib import closing
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from uuid import uuid4
@@ -129,7 +130,7 @@ class PublicAlphaFlowTestCase(unittest.TestCase):
 
             store = AlphaStore(str(db_path))
 
-            with sqlite3.connect(db_path) as connection:
+            with closing(sqlite3.connect(db_path)) as connection:
                 rows = connection.execute(
                     "SELECT version, name FROM schema_migrations ORDER BY version"
                 ).fetchall()
