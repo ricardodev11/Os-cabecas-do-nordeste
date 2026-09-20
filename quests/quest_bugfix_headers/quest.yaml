@@ -17,9 +17,9 @@ forbidden_actions:
   - "Alterar testes oficiais"
   - "Desabilitar validacoes do framework"
 visible_tests:
-  - "tests/http/test_headers.py"
+  - "tests/test_headers.py"
 hidden_tests:
-  - "hidden_tests/http/test_error_payloads.py"
+  - "hidden_tests/test_error_payloads.py"
 scoring_profile: "standard_app_build_v1"
 cognitive_layers:
   - "C2"

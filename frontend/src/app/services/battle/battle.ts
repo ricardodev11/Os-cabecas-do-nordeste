@@ -3,13 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { BattleDetail, BattleReplayBundle, BattleResult } from '../../models/battle.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BattleService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8000/api/v1';
+  private readonly baseUrl = environment.apiBaseUrl;
 
   list(): Observable<BattleDetail[]> {
     return this.http.get<BattleDetail[]>(`${this.baseUrl}/battles/`, { withCredentials: true });

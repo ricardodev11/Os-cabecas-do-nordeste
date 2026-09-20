@@ -3,13 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { PostMortem } from '../../models/post-mortem.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostMortemService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8000/api/v1';
+  private readonly baseUrl = environment.apiBaseUrl;
 
   getForRun(runId: string): Observable<PostMortem> {
     return this.http.get<PostMortem>(`${this.baseUrl}/runs/${runId}/post-mortem`);

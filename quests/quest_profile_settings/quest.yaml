@@ -18,9 +18,9 @@ forbidden_actions:
   - "Alterar testes oficiais"
   - "Aceitar payload vazio como valido"
 visible_tests:
-  - "tests/integration/test_profile_settings.py"
+  - "tests/test_profile_settings.py"
 hidden_tests:
-  - "hidden_tests/validation/test_missing_theme.py"
+  - "hidden_tests/test_missing_theme.py"
 scoring_profile: "standard_app_build_v1"
 cognitive_layers:
   - "C3"

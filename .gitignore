@@ -4,6 +4,7 @@
 backend/data/
 frontend/dist/
 frontend/node_modules/
+.venv/
 __pycache__/
 *.pyc
 .tmp-npm-cache/

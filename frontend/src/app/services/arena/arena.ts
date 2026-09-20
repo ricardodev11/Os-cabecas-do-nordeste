@@ -5,13 +5,14 @@ import { Observable, forkJoin, map } from 'rxjs';
 import { ArenaEvent } from '../../models/arena-event.model';
 import { PostMortem } from '../../models/post-mortem.model';
 import { Run, RunArtifact } from '../../models/run.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ArenaService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8000/api/v1';
+  private readonly baseUrl = environment.apiBaseUrl;
 
   createRun(payload: {
     quest_id: string;

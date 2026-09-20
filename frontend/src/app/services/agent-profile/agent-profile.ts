@@ -3,13 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { AgentProfile } from '../../models/agent-profile.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AgentProfileService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8000/api/v1';
+  private readonly baseUrl = environment.apiBaseUrl;
 
   list(): Observable<AgentProfile[]> {
     return this.http.get<AgentProfile[]>(`${this.baseUrl}/profiles/`);
