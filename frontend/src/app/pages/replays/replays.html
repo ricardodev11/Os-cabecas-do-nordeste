@@ -51,9 +51,30 @@
             </li>
           </ul>
 
-          <a class="back-link" [routerLink]="['/runs', bundle.run.id, 'post-mortem']">
-            Ver post-mortem
-          </a>
+          <ng-container *ngIf="bundle.post_mortem as pm">
+            <h3>Post-mortem</h3>
+            <p class="pm-analysis">{{ pm.claude_analysis }}</p>
+            <div class="pm-grid">
+              <div class="pm-col">
+                <h4>Pontos fortes</h4>
+                <ul>
+                  <li *ngFor="let s of pm.strengths">{{ s }}</li>
+                </ul>
+              </div>
+              <div class="pm-col">
+                <h4>Falhas</h4>
+                <ul>
+                  <li *ngFor="let f of pm.failures">{{ f }}</li>
+                </ul>
+              </div>
+              <div class="pm-col">
+                <h4>Sugestões</h4>
+                <ul>
+                  <li *ngFor="let g of pm.suggestions">{{ g }}</li>
+                </ul>
+              </div>
+            </div>
+          </ng-container>
         </article>
       </div>
     </ng-container>

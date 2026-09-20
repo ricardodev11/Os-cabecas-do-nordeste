@@ -231,6 +231,44 @@ h1 {
   font-size: 0.75rem;
 }
 
+.pm-analysis {
+  color: #b8c7dd;
+  line-height: 1.6;
+  margin: 0 0 1rem;
+}
+
+.pm-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.pm-col {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 0.85rem;
+}
+
+.pm-col h4 {
+  color: #74e5b6;
+  font-size: 0.78rem;
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+}
+
+.pm-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pm-col li {
+  color: #cad8eb;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin-bottom: 0.4rem;
+}
+
 .empty {
   color: #b8c7dd;
   padding: 2rem 0;
