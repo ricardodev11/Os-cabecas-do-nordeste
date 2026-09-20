@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 })
 export class RankingService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.apiBaseUrl;
+  private readonly baseUrl = environment.apiUrl;
 
   listForQuest(questId: string): Observable<RankingEntry[]> {
     return this.http.get<RankingEntry[]>(`${this.baseUrl}/rankings/quests/${questId}`);

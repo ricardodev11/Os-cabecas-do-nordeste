@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 })
 export class BattleService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.apiBaseUrl;
+  private readonly baseUrl = environment.apiUrl;
 
   list(): Observable<BattleDetail[]> {
     return this.http.get<BattleDetail[]>(`${this.baseUrl}/battles/`, { withCredentials: true });

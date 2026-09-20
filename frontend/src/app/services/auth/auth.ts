@@ -10,7 +10,8 @@ import { environment } from '../../../environments/environment';
 })
 export class Auth {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.apiBaseUrl;
+  private readonly baseUrl = environment.apiUrl;
+  private readonly origin = new URL(environment.apiUrl).origin;
 
   validateInvite(code: string, githubLogin: string): Observable<{ valid: boolean; status: string }> {
     return this.http.get<{ valid: boolean; status: string }>(`${this.baseUrl}/invites/validate`, {
@@ -32,7 +33,7 @@ export class Auth {
             window.location.assign(start.authorization_url);
             return EMPTY;
           }
-          return this.http.get<AuthSession>(`${environment.apiOrigin}${start.authorization_url}`, {
+          return this.http.get<AuthSession>(`${this.origin}${start.authorization_url}`, {
             withCredentials: true,
           });
         })

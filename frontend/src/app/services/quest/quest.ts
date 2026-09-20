@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 })
 export class QuestService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.apiBaseUrl;
+  private readonly baseUrl = environment.apiUrl;
 
   list(): Observable<Quest[]> {
     return this.http.get<Quest[]>(`${this.baseUrl}/quests/`);
