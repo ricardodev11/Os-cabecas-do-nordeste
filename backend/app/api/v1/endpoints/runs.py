@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from ....core.dependencies import (
     get_agent_profile_repository,
     get_post_mortem_repository,
+    get_public_alpha_service,
     get_quest_repository,
     get_ranking_repository,
     get_replay_event_repository,
@@ -13,6 +14,7 @@ from ....core.dependencies import (
     get_run_repository,
 )
 from ....models import PostMortem, ReplayEvent, Run, RunArtifact, RunCreate
+from ....models.battle import BattleRunBundle
 from ....repositories.base import (
     AgentProfileRepository,
     PostMortemRepository,
@@ -25,6 +27,7 @@ from ....core.rate_limit import enforce_rate_limit
 from ....services.artifact_service import ArtifactService
 from ....services.execution_service import ExecutionService
 from ....services.post_mortem_service import PostMortemService
+from ....services.public_alpha_service import PublicAlphaService
 from ....services.replay_service import ReplayService
 from ....services.run_service import RunService
 from ....sandbox.runner import SandboxRunner
@@ -55,6 +58,22 @@ def _build_execution_service(
     )
 
 
+def _find_battle_run_bundle(
+    alpha: PublicAlphaService, run_id: str
+) -> BattleRunBundle | None:
+    """Resolve a run owned by the SQL alpha engine (battle runs)."""
+    for battle in alpha.list_battles():
+        for bundle in alpha.get_battle_replay(battle.id).runs:
+            if bundle.run.id == run_id:
+                return bundle
+    return None
+
+
+def _resolve_run(alpha: PublicAlphaService, run_id: str) -> BattleRunBundle | None:
+    """Return a battle bundle for the matching run (in-memory or battle engine)."""
+    return _find_battle_run_bundle(alpha, run_id)
+
+
 @router.get("/", response_model=List[Run], summary="Listar runs")
 def list_runs(
     run_repository: RunRepository = Depends(get_run_repository),
@@ -72,12 +91,15 @@ def get_run(
     run_repository: RunRepository = Depends(get_run_repository),
     quest_repository: QuestRepository = Depends(get_quest_repository),
     profile_repository: AgentProfileRepository = Depends(get_agent_profile_repository),
+    alpha: PublicAlphaService = Depends(get_public_alpha_service),
 ):
-    """Return a single run."""
-    service = _build_service(run_repository, quest_repository, profile_repository)
-    run = service.get_run(run_id)
+    """Return a single run (in-memory engine or alpha battle engine)."""
+    run = _build_service(run_repository, quest_repository, profile_repository).get_run(run_id)
     if run is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Run not found")
+        bundle = _resolve_run(alpha, run_id)
+        if bundle is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Run not found")
+        run = bundle.run
     return run
 
 
@@ -115,10 +137,14 @@ def get_replay(
     run_id: str,
     run_repository: RunRepository = Depends(get_run_repository),
     replay_repository: ReplayEventRepository = Depends(get_replay_event_repository),
+    alpha: PublicAlphaService = Depends(get_public_alpha_service),
 ):
-    """Return replay events for a run."""
+    """Return replay events for a run (in-memory engine or alpha battle engine)."""
     if run_repository.get(run_id) is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Run not found")
+        bundle = _resolve_run(alpha, run_id)
+        if bundle is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Run not found")
+        return bundle.replay
     service = ReplayService(replay_repository)
     return service.list_events(run_id)
 
@@ -128,10 +154,14 @@ def get_post_mortem(
     run_id: str,
     run_repository: RunRepository = Depends(get_run_repository),
     post_mortem_repository: PostMortemRepository = Depends(get_post_mortem_repository),
+    alpha: PublicAlphaService = Depends(get_public_alpha_service),
 ):
-    """Return the post-mortem for a run."""
+    """Return the post-mortem for a run (in-memory engine or alpha battle engine)."""
     if run_repository.get(run_id) is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Run not found")
+        bundle = _resolve_run(alpha, run_id)
+        if bundle is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Run not found")
+        return bundle.post_mortem
     service = PostMortemService(post_mortem_repository)
     post_mortem = service.get_for_run(run_id)
     if post_mortem is None:
@@ -143,11 +173,15 @@ def get_post_mortem(
 def list_artifacts(
     run_id: str,
     run_repository: RunRepository = Depends(get_run_repository),
+    alpha: PublicAlphaService = Depends(get_public_alpha_service),
 ):
-    """Return artifact metadata for a run."""
+    """Return artifact metadata for a run (in-memory engine or alpha battle engine)."""
     run = run_repository.get(run_id)
     if run is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Run not found")
+        bundle = _resolve_run(alpha, run_id)
+        if bundle is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Run not found")
+        run = bundle.run
     service = ArtifactService()
     return service.list_artifacts(run)
 
@@ -161,11 +195,15 @@ def get_artifact(
     run_id: str,
     artifact_name: str,
     run_repository: RunRepository = Depends(get_run_repository),
+    alpha: PublicAlphaService = Depends(get_public_alpha_service),
 ):
-    """Return artifact content for a run."""
+    """Return artifact content for a run (in-memory engine or alpha battle engine)."""
     run = run_repository.get(run_id)
     if run is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Run not found")
+        bundle = _resolve_run(alpha, run_id)
+        if bundle is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Run not found")
+        run = bundle.run
     service = ArtifactService()
     artifact = service.get_artifact(run, artifact_name)
     if artifact is None:
