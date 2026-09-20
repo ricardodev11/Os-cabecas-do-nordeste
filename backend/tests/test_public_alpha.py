@@ -1,5 +1,4 @@
 """Integration tests for the public alpha battle flow."""
-import os
 import sqlite3
 import time
 import unittest
@@ -37,6 +36,9 @@ class PublicAlphaFlowTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
         self.login_suffix = uuid4().hex[:8]
+        self._original_db_path = settings.ALPHA_DB_PATH
+        self._tmp_dir = TemporaryDirectory()
+        settings.ALPHA_DB_PATH = str(Path(self._tmp_dir.name) / "public-alpha.sqlite3")
         get_quest_repository.cache_clear()
         get_agent_profile_repository.cache_clear()
         get_run_repository.cache_clear()
@@ -46,8 +48,12 @@ class PublicAlphaFlowTestCase(unittest.TestCase):
         get_public_alpha_service.cache_clear()
         get_alpha_store.cache_clear()
         reset_rate_limiter()
-        if os.path.exists(settings.ALPHA_DB_PATH):
-            os.remove(settings.ALPHA_DB_PATH)
+
+    def tearDown(self) -> None:
+        get_public_alpha_service.cache_clear()
+        get_alpha_store.cache_clear()
+        settings.ALPHA_DB_PATH = self._original_db_path
+        self._tmp_dir.cleanup()
 
     def _login(self, client: TestClient, github_login: str) -> None:
         start = client.post(

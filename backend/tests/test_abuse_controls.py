@@ -1,6 +1,7 @@
 """Abuse-control tests for the public alpha hardening sprint."""
-import os
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from uuid import uuid4
 
 from fastapi.testclient import TestClient
@@ -23,6 +24,9 @@ from backend.app.sandbox.runner import DockerSandboxProvider
 
 class AbuseControlsTestCase(unittest.TestCase):
     def setUp(self) -> None:
+        self._original_db_path = settings.ALPHA_DB_PATH
+        self._tmp_dir = TemporaryDirectory()
+        settings.ALPHA_DB_PATH = str(Path(self._tmp_dir.name) / "abuse-controls.sqlite3")
         self.client = TestClient(app)
         self.opponent = TestClient(app)
         self.login_suffix = uuid4().hex[:8]
@@ -35,8 +39,12 @@ class AbuseControlsTestCase(unittest.TestCase):
         get_public_alpha_service.cache_clear()
         get_alpha_store.cache_clear()
         reset_rate_limiter()
-        if os.path.exists(settings.ALPHA_DB_PATH):
-            os.remove(settings.ALPHA_DB_PATH)
+
+    def tearDown(self) -> None:
+        get_public_alpha_service.cache_clear()
+        get_alpha_store.cache_clear()
+        settings.ALPHA_DB_PATH = self._original_db_path
+        self._tmp_dir.cleanup()
 
     def _login(self, client: TestClient, github_login: str) -> None:
         start = client.post(
