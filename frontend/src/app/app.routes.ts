@@ -10,6 +10,7 @@ import { Ranking } from './pages/ranking/ranking';
 import { Result } from './pages/result/result';
 import { AgentProfileList } from './pages/agent-profile-list/agent-profile-list';
 import { AgentProfileEditor } from './pages/agent-profile-editor/agent-profile-editor';
+import { PostMortem } from './pages/post-mortem/post-mortem';
 
 export const routes: Routes = [
   { path: '', component: LandingPage },
@@ -23,5 +24,6 @@ export const routes: Routes = [
   { path: 'profiles', component: AgentProfileList },
   { path: 'profiles/new', component: AgentProfileEditor },
   { path: 'profiles/:id/edit', component: AgentProfileEditor },
+  { path: 'runs/:runId/post-mortem', component: PostMortem },
   { path: '**', redirectTo: '' },
 ];

@@ -1,1 +1,43 @@
-<p>post-mortem works!</p>
+<section class="page">
+  <header class="page-header">
+    <p class="eyebrow">Análise</p>
+    <h1>Post-mortem da run</h1>
+    <p>O que aconteceu tecnicamente: pontos fortes, falhas e sugestões do juiz.</p>
+  </header>
+
+  <ng-container *ngIf="postMortem$ | async as pm; else missing">
+    <div class="score-card" *ngIf="pm">
+      <div class="score"><strong>{{ pm.final_score }}</strong><span>score</span></div>
+      <div class="score-meta">
+        <span>✅ {{ pm.tests_passed }} passou</span>
+        <span>❌ {{ pm.tests_failed }} falhou</span>
+      </div>
+      <p class="analysis">{{ pm.claude_analysis }}</p>
+    </div>
+
+    <div class="columns" *ngIf="pm">
+      <div class="col">
+        <h2>Pontos fortes</h2>
+        <ul>
+          <li *ngFor="let s of pm.strengths">{{ s }}</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h2>Falhas</h2>
+        <ul>
+          <li *ngFor="let f of pm.failures">{{ f }}</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h2>Sugestões</h2>
+        <ul>
+          <li *ngFor="let g of pm.suggestions">{{ g }}</li>
+        </ul>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #missing>
+    <p class="empty">Post-mortem não disponível para esta run.</p>
+  </ng-template>
+</section>
