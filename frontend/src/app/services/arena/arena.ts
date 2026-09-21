@@ -12,7 +12,7 @@ import { environment } from '../../../environments/environment';
 })
 export class ArenaService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.apiUrl;
+  private readonly baseUrl = environment.apiBaseUrl;
 
   createRun(payload: {
     quest_id: string;

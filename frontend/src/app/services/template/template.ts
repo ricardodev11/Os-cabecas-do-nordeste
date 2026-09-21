@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 })
 export class TemplateService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.apiUrl;
+  private readonly baseUrl = environment.apiBaseUrl;
 
   listAgentTemplates(): Observable<AgentTemplate[]> {
     return this.http.get<AgentTemplate[]>(`${this.baseUrl}/templates/agents`, { withCredentials: true });

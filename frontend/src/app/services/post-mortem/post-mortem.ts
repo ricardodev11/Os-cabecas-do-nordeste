@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 })
 export class PostMortemService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.apiUrl;
+  private readonly baseUrl = environment.apiBaseUrl;
 
   getForRun(runId: string): Observable<PostMortem> {
     return this.http.get<PostMortem>(`${this.baseUrl}/runs/${runId}/post-mortem`);
