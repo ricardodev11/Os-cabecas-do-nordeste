@@ -16,6 +16,23 @@
   margin: 0;
 }
 
+.status-row {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
 .page-header h1 {
   font-size: 1.9rem;
   line-height: 1.1;

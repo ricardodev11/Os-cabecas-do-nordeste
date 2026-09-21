@@ -11,7 +11,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
-import { catchError, combineLatest, map, of, switchMap, timer } from 'rxjs';
+import { catchError, combineLatest, concat, map, of, switchMap, tap, EMPTY, finalize } from 'rxjs';
 
 import { AgentProfile } from '../../models/agent-profile.model';
 import { AuthSession } from '../../models/auth-session.model';
@@ -59,11 +59,20 @@ export class BattleRoom {
   readonly me$ = this.authService.me().pipe(catchError(() => of({ authenticated: false, user: null } as AuthSession)));
   readonly myProfiles$ = this.profileService.listMine().pipe(catchError(() => of([] as AgentProfile[])));
   readonly battleId$ = this.route.paramMap.pipe(map((params) => params.get('id') ?? ''));
+  /** true enquanto o SSE stream da battle estiver ativo/aberto. */
+  readonly live = signal(false);
   readonly battle$ = this.battleId$.pipe(
     switchMap((battleId) =>
-      timer(0, 2500).pipe(
-        switchMap(() => this.battleService.getById(battleId)),
-        catchError(() => of(null))
+      concat(
+        // 1) Carrega o detail inicial normalmente.
+        this.battleService.getById(battleId).pipe(catchError(() => of(null))),
+        // 2) SSE alimenta os refreshes seguintes. Se cair no meio, mantém o último detail (EMPTY).
+        this.battleService.stream(battleId).pipe(
+          tap(() => this.live.set(true)),
+          switchMap(() => this.battleService.getById(battleId).pipe(catchError(() => of(null)))),
+          catchError(() => EMPTY),
+          finalize(() => this.live.set(false))
+        )
       )
     )
   );

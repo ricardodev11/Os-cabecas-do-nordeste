@@ -60,6 +60,13 @@ export interface BattleDetail {
   result: BattleResult | null;
 }
 
+/** Evento do SSE stream de status (`GET /battles/{id}/stream`). */
+export interface BattleStreamEvent {
+  battle_id: string;
+  status: string;
+  winner_participant_id?: string | null;
+}
+
 export interface BattleRunBundle {
   participant_id: string;
   run: Run;
