@@ -6,6 +6,7 @@ import logging
 import os
 import shutil
 import subprocess
+import sys
 from difflib import unified_diff
 from dataclasses import dataclass
 from pathlib import Path
@@ -398,7 +399,7 @@ output_path.write_text(json.dumps(payload), encoding="utf-8")
 print(json.dumps(payload))
 """
         completed = subprocess.run(
-            ["python3", "-c", script, str(quest_root), str(workspace), suite_path, str(output_path)],
+            [sys.executable, "-c", script, str(quest_root), str(workspace), suite_path, str(output_path)],
             cwd=quest_root,
             check=True,
             capture_output=True,

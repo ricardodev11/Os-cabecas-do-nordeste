@@ -1,13 +1,14 @@
 """Tests for the local run CLI."""
 import json
 import subprocess
+import sys
 import unittest
 
 
 class RunQuestCliTestCase(unittest.TestCase):
     def test_lists_quests(self) -> None:
         completed = subprocess.run(
-            ["python3", "-m", "backend.app.cli.run_quest", "--list-quests"],
+            [sys.executable, "-m", "backend.app.cli.run_quest", "--list-quests"],
             check=True,
             capture_output=True,
             text=True,
@@ -19,7 +20,7 @@ class RunQuestCliTestCase(unittest.TestCase):
     def test_runs_with_inline_override(self) -> None:
         completed = subprocess.run(
             [
-                "python3",
+                sys.executable,
                 "-m",
                 "backend.app.cli.run_quest",
                 "--quest-id",
